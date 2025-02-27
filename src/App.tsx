@@ -5,7 +5,9 @@ import Layout from './components/ui/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Transcripts from './pages/Transcripts';
+import LiveMonitoring from './pages/LiveMonitoring';
 import Callqueue from './pages/Callqueue';
+import Resources from './pages/Resources';
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -46,9 +48,9 @@ function App() {
           >
             <Route index element={<Dashboard />} />
             <Route path="calls" element={<Callqueue />} />
-            <Route path="monitoring" element={<Callqueue />} />
-            <Route path="transcripts" element={<Callqueue />} />
-            <Route path="resources" element={<div className="p-6">Resources Page</div>} />
+            <Route path="monitoring" element={<LiveMonitoring/>} />
+            <Route path="transcripts" element={<Transcripts />} />
+            <Route path="resources" element={<Resources />} />
             <Route path="social" element={<div className="p-6">Social Media Page</div>} />
             <Route path="analytics" element={<div className="p-6">Analytics Page</div>} />
             <Route path="users" element={<div className="p-6">User Management Page</div>} />
