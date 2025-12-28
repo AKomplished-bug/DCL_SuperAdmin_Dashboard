@@ -8,6 +8,7 @@ import Transcripts from './pages/Transcripts';
 import LiveMonitoring from './pages/LiveMonitoring';
 import Callqueue from './pages/Callqueue';
 import Resources from './pages/Resources';
+import Analytics from './pages/Analytics';
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -52,9 +53,7 @@ function App() {
             <Route path="transcripts" element={<Transcripts />} />
             <Route path="resources" element={<Resources />} />
             <Route path="social" element={<div className="p-6">Social Media Page</div>} />
-            <Route path="analytics" element={<div className="p-6">Analytics Page</div>} />
-            <Route path="users" element={<div className="p-6">User Management Page</div>} />
-            <Route path="settings" element={<div className="p-6">Settings Page</div>} />
+            <Route path="analytics" element={<Analytics />} />
           </Route>
           
           <Route path="*" element={<Navigate to="/" replace />} />

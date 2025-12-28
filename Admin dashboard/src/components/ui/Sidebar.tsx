@@ -30,8 +30,6 @@ const Sidebar: React.FC = () => {
     { name: 'Resources', path: '/resources', icon: <Truck size={20} /> },
     { name: 'Social Media', path: '/social', icon: <MessageSquare size={20} /> },
     { name: 'Analytics', path: '/analytics', icon: <BarChart3 size={20} /> },
-    { name: 'User Management', path: '/users', icon: <Users size={20} />, adminOnly: true },
-    { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];
   
   return (

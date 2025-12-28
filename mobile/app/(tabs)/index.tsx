@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { Phone, X, Mic, MicOff, Volume2 } from 'lucide-react-native';
+import { Phone, X, Mic, MicOff, Volume2, Delete } from 'lucide-react-native';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWebRTC } from '@/hooks/useWebRTC';
@@ -31,11 +31,17 @@ export default function DialPad() {
   ];
 
   const handleNumberPress = (num: string) => {
-    setNumber(prev => prev + num);
+    if (number.length < 15) { // Limit number length
+      setNumber(prev => prev + num);
+    }
   };
 
   const handleBackspace = () => {
     setNumber(prev => prev.slice(0, -1));
+  };
+
+  const handleLongPressBackspace = () => {
+    setNumber('');
   };
 
   const handleCall = async () => {
@@ -77,6 +83,19 @@ export default function DialPad() {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const formatPhoneNumber = (value: string) => {
+    if (!value) return '';
+    
+    const numbers = value.replace(/\D/g, '');
+    const char = { 0: '(', 3: ') ', 6: '-' };
+    let formatted = '';
+    
+    for (let i = 0; i < numbers.length; i++) {
+      formatted += (char[i] || '') + numbers[i];
+    }
+    return formatted;
+  };
+
   useEffect(() => {
     if (localStream) {
       const audioTracks = localStream.getAudioTracks();
@@ -100,7 +119,7 @@ export default function DialPad() {
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <BlurView intensity={80} style={styles.callContainer}>
           <View style={styles.callerInfo}>
-            <Text style={styles.callerNumber}>{number}</Text>
+            <Text style={styles.callerNumber}>{formatPhoneNumber(number)}</Text>
             <Text style={styles.callStatus}>
               {connectionState === 'connected' 
                 ? formatDuration(callDuration)
@@ -141,7 +160,15 @@ export default function DialPad() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.numberDisplay}>
-        <Text style={styles.number}>{number}</Text>
+        <Text style={styles.number}>{formatPhoneNumber(number)}</Text>
+        {number.length > 0 && (
+          <TouchableOpacity
+            style={styles.backspaceButton}
+            onPress={handleBackspace}
+            onLongPress={handleLongPressBackspace}>
+            <Delete size={24} color="#fff" />
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.dialPad}>
@@ -158,17 +185,6 @@ export default function DialPad() {
           </View>
         ))}
       </View>
-
-      {number.length > 0 && (
-        <View style={styles.editControls}>
-          <TouchableOpacity 
-            style={styles.editButton}
-            onPress={handleBackspace}
-            onLongPress={() => setNumber('')}>
-            <Text style={styles.editButtonText}>⌫</Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
       {number.length > 0 && (
         <TouchableOpacity 
@@ -189,11 +205,20 @@ const styles = StyleSheet.create({
   numberDisplay: {
     padding: 20,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   number: {
     fontSize: 36,
     color: '#fff',
     letterSpacing: 2,
+    textAlign: 'center',
+  },
+  backspaceButton: {
+    marginLeft: 15,
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#333',
   },
   dialPad: {
     padding: 20,
@@ -212,23 +237,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dialButtonText: {
-    fontSize: 32,
-    color: '#fff',
-  },
-  editControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  editButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#555',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  editButtonText: {
     fontSize: 32,
     color: '#fff',
   },
